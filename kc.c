@@ -16,6 +16,7 @@
 
 typedef unsigned I;typedef char C,*S;
 #define R return
+#define B break
 #define O printf
 #define V void
 
@@ -33,15 +34,16 @@ I assign=0;
 I plus=1;
 I minus=2;
 
-typedef struct a0{I t; C v;struct m0 *r;} A;
+typedef struct a0{I t; C v;struct a0 *r;} A;
 #define SA SZ(A)
 A *fnode = NULL;
 A *lnode = NULL;
 
 A *astinit() {R (A *)mmap(NULL, SA*10, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANON, -1, 0);}
-I kinit() {fnode=astinit();if(!fnode)R 1;fnode->v=NULL;fnode->t=assign;fnode->r=NULL;lnode=fnode; R 0;}
-I newnode(a,b) {lnode->v=a;lnode->r=++lnode;lnode->t=b;lnode->r=NULL; R 0;}
-V kproc() {A *n=fnode;while(NULL!=n->r){OC(n->v);n++;} }
+I kinit() {fnode=astinit();if(!fnode)R 1;fnode->r=NULL; R 0;}
+I newnode(C a,I b) {if(lnode){A *n=lnode+1;lnode->r=n;lnode=n;}else{lnode=fnode;} lnode->v=a;lnode->t=b; R 0;}
+V kprint(A *n) {OC(n->v);}
+V kproc() {A *n=fnode;for(;;){kprint(n);if(!n->r)B;n++;} }
 V tok(c) {if(isdigit(c)){newnode(c,plus);}
           else if (c==0x0A) {kproc();} }
 I main() {if(kinit())R 1;RL(tok);munmap(fnode,SA*10);R 0;}
