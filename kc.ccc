@@ -41,10 +41,10 @@ A *lnode = NULL;
 
 A *astinit() {R (A *)mmap(NULL, SA*10, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANON, -1, 0);}
 I kinit() {fnode=astinit();if(!fnode)R 1;fnode->r=NULL; R 0;}
-I newnode(C a,I b) {if(lnode){A *n=lnode+1;lnode->r=n;lnode=n;}else{lnode=fnode;} lnode->v=a;lnode->t=b; R 0;}
+I newnode(C a,I b) {if(lnode){lnode->r=lnode++;}else{lnode=fnode;} lnode->v=a;lnode->t=b; R 0;}
 V kprint(A *n) {OC(n->v);}
 V kproc() {A *n=fnode;for(;;){kprint(n);if(!n->r)B;n++;} }
-V tok(c) {if(isdigit(c)){newnode(c,plus);}
+V tok(C c) {if(isdigit(c)){newnode(c,plus);}
           else if (c==0x0A) {kproc();} }
 I main() {if(kinit())R 1;RL(tok);munmap(fnode,SA*10);R 0;}
 

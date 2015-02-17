@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-I. -O3
+CFLAGS=-I. -std=gnu99 -O3 -Wall
 LDFLAGS=
 TARGET=k
 SRC=*.c
